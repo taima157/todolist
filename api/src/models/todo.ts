@@ -21,7 +21,7 @@ class Todo extends Model<
   declare userId: ForeignKey<User["idUser"]>;
   declare title: string;
   declare description: string;
-  declare done: boolean;
+  declare done: CreationOptional<boolean>;
 
   declare getTasks: HasManyGetAssociationsMixin<Task>;
 
@@ -56,8 +56,8 @@ Todo.init(
     },
     done: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
       defaultValue: 0,
+      allowNull: false,
     },
   },
   {
