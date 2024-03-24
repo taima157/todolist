@@ -13,7 +13,7 @@ class Task extends Model<InferAttributes<Task>, InferCreationAttributes<Task>> {
   declare idTask: CreationOptional<string>;
   declare todoId: ForeignKey<Todo["idTodo"]>;
   declare description: string;
-  declare done: boolean;
+  declare done: CreationOptional<boolean>;
 }
 
 Task.init(
