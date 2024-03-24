@@ -20,10 +20,38 @@ export default class TodoController {
     } catch (error) {
       return res
         .status(500)
-        .send({ message: "Erro ao buscar o a fazer.", error });
+        .send({ message: "Erro ao buscar o afazer.", error });
     }
   }
-  
+
+  static async deleteTodo(req: Request, res: Response) {
+    try {
+      const { id_todo } = req.params;
+
+      const todo = await TodoRepository.findByPk(id_todo);
+
+      if (todo) {
+        const tasks = await todo.getTasks();
+
+        tasks.forEach(async (task) => {
+          await task.destroy();
+        });
+
+        await todo.destroy();
+
+        return res
+          .status(204)
+          .send({ message: "Afazer deletado com sucesso." });
+      }
+
+      return res.status(404).send({ message: "Afazer não encontrado." });
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: "Erro ao deletar o afazer.", error });
+    }
+  }
+
   static async createTodo(req: Request, res: Response) {
     try {
       const body: CreateTodoRequestDTO = req.body;
