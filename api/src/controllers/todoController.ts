@@ -4,6 +4,26 @@ import dtoValidator from "../utils/dtoValidator";
 import TodoRepository from "../repositories/todoRepository";
 
 export default class TodoController {
+  static async getTodo(req: Request, res: Response) {
+    try {
+      const { id_todo } = req.params;
+
+      const todo = await TodoRepository.findByPk(id_todo);
+
+      if (todo) {
+        const tasks = await todo.getTasks();
+
+        return res.status(200).send({ ...todo.dataValues, tasks });
+      }
+
+      return res.status(404).send({ message: "Afazer não encontrado." });
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: "Erro ao buscar o a fazer.", error });
+    }
+  }
+  
   static async createTodo(req: Request, res: Response) {
     try {
       const body: CreateTodoRequestDTO = req.body;
@@ -20,7 +40,7 @@ export default class TodoController {
     } catch (error) {
       return res
         .status(500)
-        .send({ message: "Erro ao adicionar o a fazer.", error });
+        .send({ message: "Erro ao adicionar o afazer.", error });
     }
   }
 }
