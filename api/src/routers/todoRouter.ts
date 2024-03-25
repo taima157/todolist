@@ -4,7 +4,8 @@ import TodoController from "../controllers/todoController";
 const todoRouter = express.Router();
 
 todoRouter.get("/:id_todo", TodoController.getTodo);
-todoRouter.delete("/:id_todo", TodoController.deleteTodo);
 todoRouter.post("/", TodoController.createTodo);
+todoRouter.put("/:id_todo", TodoController.updateTodo);
+todoRouter.delete("/:id_todo", TodoController.deleteTodo);
 
 export default todoRouter;

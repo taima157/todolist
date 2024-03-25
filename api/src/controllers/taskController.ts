@@ -46,11 +46,33 @@ export default class TaskController {
         return res.status(200).send(task);
       }
 
-      return res.status(404).send({ message: "Task não encontrado." });
+      return res.status(404).send({ message: "Tarefa não encontrada." });
     } catch (error) {
       return res
         .status(500)
         .send({ message: "Erro ao adicionar a tarefa.", error });
+    }
+  }
+
+  static async deleteTask(req: Request, res: Response) {
+    try {
+      const { id_task } = req.params;
+
+      const task = await TaskRepository.findByPk(id_task);
+
+      if (task) {
+        await task.destroy();
+
+        return res
+          .status(204)
+          .send({ message: "Tarefa deletada com sucesso." });
+      }
+
+      return res.status(404).send({ message: "Tarefa não encontrada." });
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: "Erro ao deletar a tarefa.", error });
     }
   }
 }

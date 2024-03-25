@@ -5,5 +5,6 @@ const taskRouter = express.Router();
 
 taskRouter.post("/", TaskController.createTask);
 taskRouter.put("/:id_task", TaskController.updateTask);
+taskRouter.delete("/:id_task", TaskController.deleteTask);
 
 export default taskRouter;

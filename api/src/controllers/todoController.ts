@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import CreateTodoRequestDTO from "../dtos/CreateTodoRequestDTO";
 import dtoValidator from "../utils/dtoValidator";
 import TodoRepository from "../repositories/todoRepository";
+import UpdateTodoRequestDTO from "../dtos/UpdateTodoRequestDTO";
 
 export default class TodoController {
   static async getTodo(req: Request, res: Response) {
@@ -37,6 +38,35 @@ export default class TodoController {
       const newTodo = await TodoRepository.create(body);
 
       return res.status(201).send(newTodo);
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: "Erro ao adicionar o afazer.", error });
+    }
+  }
+
+  static async updateTodo(req: Request, res: Response) {
+    try {
+      const { id_todo } = req.params;
+      const body: UpdateTodoRequestDTO = req.body;
+
+      if (!dtoValidator(body, ["description", "done", "userId", "title"])) {
+        return res
+          .status(400)
+          .send({ message: "Erro no corpo da requisição." });
+      }
+
+      const todo = await TodoRepository.findByPk(id_todo);
+
+      if (todo) {
+        todo.set(body);
+
+        await todo.save();
+
+        return res.status(200).send(todo);
+      }
+
+      return res.status(404).send({ message: "Afazer não encontrado." });
     } catch (error) {
       return res
         .status(500)
