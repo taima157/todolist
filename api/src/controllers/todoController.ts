@@ -24,6 +24,26 @@ export default class TodoController {
     }
   }
 
+  static async createTodo(req: Request, res: Response) {
+    try {
+      const body: CreateTodoRequestDTO = req.body;
+
+      if (!dtoValidator(body, ["userId", "title", "description"])) {
+        return res
+          .status(400)
+          .send({ message: "Erro no corpo da requisição." });
+      }
+
+      const newTodo = await TodoRepository.create(body);
+
+      return res.status(201).send(newTodo);
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ message: "Erro ao adicionar o afazer.", error });
+    }
+  }
+
   static async deleteTodo(req: Request, res: Response) {
     try {
       const { id_todo } = req.params;
@@ -49,26 +69,6 @@ export default class TodoController {
       return res
         .status(500)
         .send({ message: "Erro ao deletar o afazer.", error });
-    }
-  }
-
-  static async createTodo(req: Request, res: Response) {
-    try {
-      const body: CreateTodoRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["userId", "title", "description"])) {
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
-
-      const newTodo = await TodoRepository.create(body);
-
-      return res.status(201).send(newTodo);
-    } catch (error) {
-      return res
-        .status(500)
-        .send({ message: "Erro ao adicionar o afazer.", error });
     }
   }
 }
