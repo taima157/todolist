@@ -44,7 +44,7 @@ export default class UserController {
 
       const user = await UserRepository.findByEmail(body.email);
 
-      if (user.length != 0) {
+      if (user) {
         return res.status(400).send({ message: "Usuário já cadastrado." });
       }
 

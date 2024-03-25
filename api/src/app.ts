@@ -5,6 +5,8 @@ import helmet from "helmet";
 import userRouter from "./routers/userRouter";
 import todoRouter from "./routers/todoRouter";
 import taskRouter from "./routers/taskRouter";
+import authRouter from "./routers/authRouter";
+import AuthController from "./controllers/authController";
 
 const app = express();
 
@@ -13,11 +15,12 @@ app.use(cors());
 app.use(morgan("tiny"));
 app.use(helmet());
 
-app.use("/user/", userRouter);
-app.use("/todo/", todoRouter);
-app.use("/task/", taskRouter);
+app.use("/user/", AuthController.middleware, userRouter);
+app.use("/todo/", AuthController.middleware, todoRouter);
+app.use("/task/", AuthController.middleware, taskRouter);
+app.use("/auth/", authRouter);
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
   res.status(200).send({ message: "API Todo List" });
 });
 
