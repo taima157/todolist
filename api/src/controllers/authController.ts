@@ -19,9 +19,7 @@ export default class AuthController {
       }
 
       const user = await UserRepository.findByEmail(body.email);
-
-      console.log(user);
-
+      
       if (user) {
         const match = await bycript.compare(body.password, user.password);
 

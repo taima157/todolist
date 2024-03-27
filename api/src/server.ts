@@ -8,7 +8,7 @@ import http from "http";
 import app from "./app";
 
 const server = http.createServer(app);
-const PORT = Number(process.env.PORT || 8080);
+const DOCKER_PORT = Number(process.env.NODE_DOCKER_PORT || 8080);
 
 const numCPUs = os.cpus().length / 2;
 
@@ -24,7 +24,12 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 } else {
-  server.listen(PORT, () => {
-    console.log("running...", PORT);
+  server.listen(DOCKER_PORT, () => {
+    console.log(
+      "Running internal: ",
+      DOCKER_PORT,
+      ", Running external: ",
+      process.env.NODE_LOCAL_PORT
+    );
   });
 }
