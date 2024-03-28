@@ -1,15 +1,15 @@
 {
-  "name": "api",
+  "name": "todolist-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
     "start": "node src/server.ts",
     "migrate:up": "npx sequelize-cli db:migrate",
     "migrate:undo": "npx sequelize-cli db:undo",
     "dev": "npm run migrate:up && npx nodemon src/server.ts --watch 'src/' -e ts"
   },
-  "author": "",
+  "author": "Gustavo Taima",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -22,7 +22,8 @@
     "morgan": "^1.10.0",
     "mysql2": "^3.9.2",
     "sequelize": "^6.37.1",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -33,6 +34,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/uuid": "^9.0.8",
+    "@types/yup": "^0.32.0",
     "nodemon": "^3.1.0",
     "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",

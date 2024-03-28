@@ -1,25 +1,21 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import { NextFunction, Request, Response } from "express";
-import LoginRequestDTO from "../dtos/LoginRequestDTO";
-import dtoValidator from "../utils/dtoValidator";
 import UserRepository from "../repositories/userRepository";
 import bycript from "bcrypt";
 import jwt from "jsonwebtoken";
+import { InferType, ValidationError } from "yup";
+import LoginSchema from "../schemas/LoginSchema";
 
 export default class AuthController {
   static async login(req: Request, res: Response) {
     try {
-      const body: LoginRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["email", "password"])) {
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
+      const body: InferType<typeof LoginSchema> = req.body;
+      await LoginSchema.validate(body);
 
       const user = await UserRepository.findByEmail(body.email);
-      
+
       if (user) {
         const match = await bycript.compare(body.password, user.password);
 
@@ -38,6 +34,10 @@ export default class AuthController {
 
       return res.status(404).send({ message: "E-mail ou senha inválidas." });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res.status(500).send({ message: "Erro ao se autenticar.", error });
     }
   }

@@ -1,25 +1,24 @@
 import { Request, Response } from "express";
-import CreateTaskRequestDTO from "../dtos/CreateTaskRequestDTO";
-import dtoValidator from "../utils/dtoValidator";
 import TaskRepository from "../repositories/taskRepository";
-import UpdateTaskRequestDTO from "../dtos/UpdateTaskRequestDTO";
-import UpdateTaskListRequestDTO from "../dtos/UpdateTaskListRequestDTO";
+import { InferType, ValidationError } from "yup";
+import CreateTaskSchema from "../schemas/CreateTaskSchema";
+import UpdateTaskSchema from "../schemas/UpdateTaskSchema";
+import UpdateTaskListSchema from "../schemas/UpdateTaskListSchema";
 
 export default class TaskController {
   static async createTask(req: Request, res: Response) {
     try {
-      const body: CreateTaskRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["todoId", "description"])) {
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
+      const body: InferType<typeof CreateTaskSchema> = req.body;
+      await CreateTaskSchema.validate(body);
 
       const newTask = await TaskRepository.create(body);
 
       return res.status(201).send(newTask);
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res
         .status(500)
         .send({ message: "Erro ao adicionar a tarefa.", error });
@@ -29,13 +28,8 @@ export default class TaskController {
   static async updateTask(req: Request, res: Response) {
     try {
       const { id_task } = req.params;
-      const body: UpdateTaskRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["description", "done", "todoId"])) {
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
+      const body: InferType<typeof UpdateTaskSchema> = req.body;
+      await UpdateTaskSchema.validate(body);
 
       const task = await TaskRepository.findByPk(id_task);
 
@@ -49,6 +43,10 @@ export default class TaskController {
 
       return res.status(404).send({ message: "Tarefa não encontrada." });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res
         .status(500)
         .send({ message: "Erro ao atualizar a tarefa.", error });
@@ -57,26 +55,12 @@ export default class TaskController {
 
   static async updateTaskList(req: Request, res: Response) {
     try {
-      const body: UpdateTaskListRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["taskList"])) {
-        console.log("teste 1")
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
+      const body: InferType<typeof UpdateTaskListSchema> = req.body;
+      await UpdateTaskListSchema.validate(body);
 
       const taskList = body.taskList;
 
       taskList.forEach(async (task) => {
-        if (!dtoValidator(task, ["idTask", "todoId", "description", "done"])) {
-          console.log("teste 2")
-
-          return res
-            .status(400)
-            .send({ message: "Erro no corpo da requisição." });
-        }
-
         const dbTask = await TaskRepository.findByPk(task.idTask);
 
         if (!dbTask)
@@ -96,9 +80,13 @@ export default class TaskController {
 
       return res.status(200).send({
         message: "Lista de tarefas atualizada com sucesso.",
-        taskList
-      })
+        taskList,
+      });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res
         .status(500)
         .send({ message: "Erro ao atualizar a tarefa.", error });

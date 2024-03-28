@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import CreateTodoRequestDTO from "../dtos/CreateTodoRequestDTO";
-import dtoValidator from "../utils/dtoValidator";
 import TodoRepository from "../repositories/todoRepository";
-import UpdateTodoRequestDTO from "../dtos/UpdateTodoRequestDTO";
+import CreateTodoSchema from "../schemas/CreateTodoSchema";
+import { InferType, ValidationError } from "yup";
+import UpdateTodoSchema from "../schemas/UpdateTodoSchema";
 
 export default class TodoController {
   static async getTodo(req: Request, res: Response) {
@@ -27,18 +27,17 @@ export default class TodoController {
 
   static async createTodo(req: Request, res: Response) {
     try {
-      const body: CreateTodoRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["userId", "title", "description"])) {
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
+      const body: InferType<typeof CreateTodoSchema> = req.body;
+      await CreateTodoSchema.validate(body);
 
       const newTodo = await TodoRepository.create(body);
 
       return res.status(201).send(newTodo);
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res
         .status(500)
         .send({ message: "Erro ao adicionar o afazer.", error });
@@ -48,13 +47,8 @@ export default class TodoController {
   static async updateTodo(req: Request, res: Response) {
     try {
       const { id_todo } = req.params;
-      const body: UpdateTodoRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["description", "done", "userId", "title"])) {
-        return res
-          .status(400)
-          .send({ message: "Erro no corpo da requisição." });
-      }
+      const body: InferType<typeof UpdateTodoSchema> = req.body;
+      await UpdateTodoSchema.validate(body);
 
       const todo = await TodoRepository.findByPk(id_todo);
 
@@ -68,6 +62,10 @@ export default class TodoController {
 
       return res.status(404).send({ message: "Afazer não encontrado." });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res
         .status(500)
         .send({ message: "Erro ao adicionar o afazer.", error });

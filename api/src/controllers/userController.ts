@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import dtoValidator from "../utils/dtoValidator";
-import CreateUserRequestDTO from "../dtos/CreateUserRequestDTO";
+import { InferType, ValidationError } from "yup";
+import CreateUserSchema from "../schemas/CreateUserSchema";
 import bycript from "bcrypt";
 import UserRepository from "../repositories/userRepository";
 
@@ -34,13 +34,8 @@ export default class UserController {
 
   static async createUser(req: Request, res: Response) {
     try {
-      const body: CreateUserRequestDTO = req.body;
-
-      if (!dtoValidator(body, ["name", "email", "password"])) {
-        return res
-          .status(400)
-          .send({ message: "Error no corpo da requisição." });
-      }
+      const body: InferType<typeof CreateUserSchema> = req.body;
+      await CreateUserSchema.validate(body);
 
       const user = await UserRepository.findByEmail(body.email);
 
@@ -58,6 +53,10 @@ export default class UserController {
         return res.status(201).send(newUser);
       });
     } catch (error) {
+      if (error instanceof ValidationError) {
+        return res.status(422).send({ message: error.message });
+      }
+
       return res
         .status(500)
         .send({ message: "Não foi possível criar usuário.", error });

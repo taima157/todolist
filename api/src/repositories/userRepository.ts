@@ -12,8 +12,6 @@ export default class UserRepository extends User {
       }
     );
 
-    if (user.length != 0) return user[0];
-
-    return null;
+    return user[0] ? user[0] : null
   }
 }
