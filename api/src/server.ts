@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+  path: "../.env"
+});
 
 import cluster from "cluster";
 import os from "os";
@@ -8,7 +10,8 @@ import http from "http";
 import app from "./app";
 
 const server = http.createServer(app);
-const DOCKER_PORT = Number(process.env.NODE_DOCKER_PORT || 8080);
+const API_DOCKER_PORT = Number(process.env.API_DOCKER_PORT || 8080);
+const API_LOCAL_PORT = Number(process.env.API_LOCAL_PORT || 8080);
 
 const numCPUs = os.cpus().length / 2;
 
@@ -24,12 +27,12 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 } else {
-  server.listen(DOCKER_PORT, () => {
+  server.listen(API_DOCKER_PORT, () => {
     console.log(
       "Running internal: ",
-      DOCKER_PORT,
+      API_DOCKER_PORT,
       ", Running external: ",
-      process.env.NODE_LOCAL_PORT
+      API_LOCAL_PORT
     );
   });
 }
