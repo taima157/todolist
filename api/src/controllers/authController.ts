@@ -21,6 +21,8 @@ export default class AuthController {
       if (user) {
         const match = await bycript.compare(body.password, user.password);
 
+        console.log("user", user);
+
         if (match) {
           const token = jwt.sign(
             { email: user.email, idUser: user.idUser },
