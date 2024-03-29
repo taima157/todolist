@@ -22,8 +22,9 @@ export default class UserController {
 
       if (user) {
         const todos = await user.getTodos();
+        const { password, ...otherValues } = user.dataValues;
 
-        return res.status(200).send({ ...user.dataValues, todos });
+        return res.status(200).send({ ...otherValues, todos });
       }
 
       return res.status(404).send({ message: "Usuário não encontrado." });
