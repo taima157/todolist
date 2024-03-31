@@ -1,13 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
-import { Controller, useForm } from "react-hook-form";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useForm } from "react-hook-form";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../constants/colors";
 import { useContext } from "react";
@@ -16,6 +10,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Redirect } from "expo-router/build/link/Link";
 import { SignupUser } from "../types/auth.context";
+import { Form } from "../components/Form";
+import { Input } from "../components/Input";
+import { Button } from "../components/Button";
 
 export default function Signup() {
   const { user, signup } = useContext(AuthContext);
@@ -36,14 +33,13 @@ export default function Signup() {
       .string()
       .email("E-mail inválido.")
       .required("Preencha o campo e-mail."),
-    password: yup.string().required("Preencha o campo senha."),
+    password: yup
+      .string()
+      .min(8, "A senha deve conter no minimo 8 caracteres.")
+      .required("Preencha o campo senha."),
   });
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { control, handleSubmit } = useForm({
     resolver: yupResolver(yupSchema),
   });
 
@@ -56,7 +52,7 @@ export default function Signup() {
       <TouchableOpacity style={style.buttonBack} onPress={() => router.back()}>
         <MaterialIcons name="arrow-back" size={30} color={colors.orange} />
       </TouchableOpacity>
-      <View style={style.form}>
+      <View style={style.formView}>
         <View style={style.titleBox}>
           <Text style={style.title}>Cadastrar Conta</Text>
           <Text style={style.subtitle}>
@@ -64,129 +60,24 @@ export default function Signup() {
           </Text>
         </View>
 
-        <View style={style.inputs}>
-          <View style={style.inputError}>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              name="name"
-              render={({
-                field: { onChange, onBlur, value },
-                fieldState: { invalid },
-              }) => (
-                <View
-                  style={[
-                    style.inputBox,
-                    value != null && value != "" && style.filledField,
-                    invalid && style.invalidInput,
-                  ]}
-                >
-                  <MaterialIcons name="person" size={24} color="#404040" />
-                  <View style={style.inputField}>
-                    <Text style={style.label}>Nome</Text>
-                    <TextInput
-                      placeholderTextColor="#c4c4c4"
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      style={style.input}
-                      inputMode="text"
-                    />
-                  </View>
-                </View>
-              )}
-            />
-            {errors.name && (
-              <Text style={style.errorMessage}>{errors.name.message}</Text>
-            )}
-          </View>
+        <Form.Root>
+          <Input.Controller control={control} name="name">
+            <Input.Icon icon={MaterialIcons} name="person" size={24} />
+            <Input.Field label="Nome" />
+          </Input.Controller>
+          <Input.Controller control={control} name="email">
+            <Input.Icon icon={MaterialIcons} name="email" size={24} />
+            <Input.Field label="Email" keyboardType="email-address" />
+          </Input.Controller>
+          <Input.Controller control={control} name="password">
+            <Input.Icon icon={MaterialIcons} name="lock" size={24} />
+            <Input.Field label="Senha" secureTextEntry />
+          </Input.Controller>
+          <Button.Root text="Cadastrar" onPress={handleSubmit(handleSignup)}>
+            <Button.Icon icon={MaterialIcons} name="login" size={24} />
+          </Button.Root>
+        </Form.Root>
 
-          <View style={style.inputError}>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              name="email"
-              render={({
-                field: { onChange, onBlur, value },
-                fieldState: { invalid },
-              }) => (
-                <View
-                  style={[
-                    style.inputBox,
-                    value != null && value != "" && style.filledField,
-                    invalid && style.invalidInput,
-                  ]}
-                >
-                  <MaterialIcons name="email" size={24} color="#404040" />
-                  <View style={style.inputField}>
-                    <Text style={style.label}>Email</Text>
-                    <TextInput
-                      placeholderTextColor="#c4c4c4"
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      style={style.input}
-                      inputMode="email"
-                    />
-                  </View>
-                </View>
-              )}
-            />
-            {errors.email && (
-              <Text style={style.errorMessage}>{errors.email.message}</Text>
-            )}
-          </View>
-
-          <View style={style.inputError}>
-            <Controller
-              control={control}
-              rules={{
-                required: true,
-              }}
-              name="password"
-              render={({
-                field: { onChange, onBlur, value },
-                fieldState: { invalid },
-              }) => (
-                <View
-                  style={[
-                    style.inputBox,
-                    value != null && value != "" && style.filledField,
-                    invalid && style.invalidInput,
-                  ]}
-                >
-                  <MaterialIcons name="lock" size={24} color="#404040" />
-                  <View style={style.inputField}>
-                    <Text style={style.label}>Senha</Text>
-                    <TextInput
-                      placeholderTextColor="#c4c4c4"
-                      value={value}
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      style={style.input}
-                      secureTextEntry
-                    />
-                  </View>
-                </View>
-              )}
-            />
-            {errors.password && (
-              <Text style={style.errorMessage}>{errors.password.message}</Text>
-            )}
-          </View>
-        </View>
-
-        <TouchableOpacity
-          style={style.buttonLogin}
-          onPress={handleSubmit(handleSignup)}
-        >
-          <Text style={style.buttonLoginText}>Cadastrar</Text>
-          <MaterialIcons name="login" size={20} color={colors.textPrimary} />
-        </TouchableOpacity>
         <Text style={style.signupMessage}>
           Já possui uma conta?{" "}
           <Link style={{ color: colors.orange }} href="/login">
@@ -211,7 +102,7 @@ const style = StyleSheet.create({
     left: 15,
     top: 55,
   },
-  form: {
+  formView: {
     width: "90%",
     gap: 60,
     padding: 10,
@@ -230,71 +121,6 @@ const style = StyleSheet.create({
     fontSize: 15,
     fontFamily: "Montserrat_600SemiBold",
     color: colors.textPrimary,
-  },
-  inputBox: {
-    flexDirection: "row",
-    gap: 5,
-    alignItems: "flex-end",
-    padding: 5,
-    borderBottomWidth: 2,
-    borderBottomColor: colors.neutral,
-    borderRadius: 2,
-    position: "relative",
-  },
-  filledField: {
-    backgroundColor: colors.backgroundSecundary,
-    borderBottomColor: colors.orange,
-  },
-  invalidInput: {
-    backgroundColor: colors.backgroundSecundary,
-    borderBottomColor: colors.red,
-  },
-  inputs: {
-    gap: 30,
-  },
-  inputError: {
-    gap: 5,
-  },
-  errorMessage: {
-    color: colors.red,
-    fontFamily: "Montserrat_600SemiBold",
-    textTransform: "uppercase",
-    fontSize: 10,
-    alignSelf: "flex-end",
-    position: "absolute",
-    bottom: -20,
-  },
-  inputField: {
-    width: "100%",
-  },
-  label: {
-    color: colors.orange,
-    fontFamily: "Montserrat_600SemiBold",
-    textTransform: "uppercase",
-    fontSize: 10,
-  },
-  input: {
-    paddingTop: 8,
-    height: 35,
-    width: "100%",
-    color: colors.textPrimary,
-    fontFamily: "Montserrat_600SemiBold",
-  },
-  buttonLogin: {
-    backgroundColor: colors.orange,
-    width: "50%",
-    borderRadius: 5,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    flexDirection: "row",
-    gap: 5,
-    alignSelf: "flex-end",
-  },
-  buttonLoginText: {
-    fontFamily: "Montserrat_600SemiBold",
-    color: colors.textPrimary,
-    textTransform: "uppercase",
   },
   signupMessage: {
     textAlign: "center",
