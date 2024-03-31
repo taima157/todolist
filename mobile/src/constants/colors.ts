@@ -7,4 +7,5 @@ export default {
   backgroundPrimary: "#171717",
   backgroundSecundary: "#1e1e1e",
   neutral: "#404040",
+  neutralSecundary: "#525252",
 };

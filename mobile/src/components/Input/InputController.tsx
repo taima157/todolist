@@ -11,10 +11,9 @@ import {
 } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 
-interface InputControllerProps {
-  control?: Control<FieldValues> | undefined | any;
-  name: string;
+interface InputControllerProps extends Omit<ControllerProps, "render"> {
   children: ReactNode;
+  control?: Control<FieldValues | any>;
 }
 
 export const InputControlerContext = createContext<{

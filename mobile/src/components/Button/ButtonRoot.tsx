@@ -9,15 +9,15 @@ import {
 } from "react-native";
 
 interface ButtonRootProps extends TouchableOpacityProps {
-  text: string;
+  text?: string;
   children?: ReactNode;
   alignSelf?: ViewStyle["alignSelf"];
 }
 
 export default function ButtonRoot(props: ButtonRootProps) {
   return (
-    <TouchableOpacity {...props} style={[props.style, style.button]}>
-      <Text style={style.buttonText}>{props.text}</Text>
+    <TouchableOpacity {...props} style={[style.button, props.style]}>
+      {props.text && <Text style={style.buttonText}>{props.text}</Text>}
       {props.children}
     </TouchableOpacity>
   );

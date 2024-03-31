@@ -1,18 +1,18 @@
 import { useContext, useRef } from "react";
-import {
-  SafeAreaView,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-} from "react-native";
+import { SafeAreaView, Text, TextInput, View, StyleSheet } from "react-native";
 import { AuthContext } from "../context/auth.context";
 import { Redirect } from "expo-router/build/link/Link";
 import colors from "../constants/colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import {
+  Control,
+  Field,
+  FieldValues,
+  Resolver,
+  useForm,
+} from "react-hook-form";
 import { Link } from "expo-router";
 import { Form } from "../components/Form";
 import { Input } from "../components/Input";
@@ -25,8 +25,6 @@ type UserLogin = {
 
 export default function Login() {
   const { login, user } = useContext(AuthContext);
-
-  const passwordInputRef = useRef<TextInput | null>(null);
 
   async function handleLogin(userLogin: UserLogin) {
     try {
