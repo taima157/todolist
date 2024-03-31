@@ -12,9 +12,9 @@ export default class TodoController {
       const todo = await TodoRepository.findByPk(id_todo);
 
       if (todo) {
-        const tasks = await todo.getTasks();
+        const taskList = await todo.getTasks();
 
-        return res.status(200).send({ ...todo.dataValues, tasks });
+        return res.status(200).send({ ...todo.dataValues, taskList });
       }
 
       return res.status(404).send({ message: "Afazer não encontrado." });

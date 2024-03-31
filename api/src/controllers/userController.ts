@@ -21,10 +21,10 @@ export default class UserController {
       const user = await UserRepository.findByPk(id_user);
 
       if (user) {
-        const todos = await user.getTodos();
+        const todoList = await user.getTodos();
         const { password, ...otherValues } = user.dataValues;
 
-        return res.status(200).send({ ...otherValues, todos });
+        return res.status(200).send({ ...otherValues, todoList });
       }
 
       return res.status(404).send({ message: "Usuário não encontrado." });
