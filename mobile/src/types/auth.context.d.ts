@@ -5,8 +5,15 @@ export interface LoginUser {
   password: string;
 }
 
+export interface SignupUser {
+  name: string;
+  email: string;
+  password: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   login: (loginUser: LoginUser) => Promise<void>;
+  signup: (signupUser: SignupUser) => Promise<void>;
   logoff: () => void;
 }

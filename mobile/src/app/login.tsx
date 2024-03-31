@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -24,18 +24,14 @@ type UserLogin = {
 export default function Login() {
   const { login, user } = useContext(AuthContext);
 
-  const [userLogin, setUserLogin] = useState<UserLogin>({
-    email: "",
-    password: "",
-  });
+  const passwordInputRef = useRef<TextInput | null>(null);
 
-  async function handleLogin(data: UserLogin) {
-    console.log(data);
-    // try {
-    //   await login(userLogin);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+  async function handleLogin(userLogin: UserLogin) {
+    try {
+      await login(userLogin);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const yupSchema = yup.object({
@@ -95,6 +91,10 @@ export default function Login() {
                       onBlur={onBlur}
                       style={style.input}
                       inputMode="email"
+                      onEndEditing={() => {
+                        passwordInputRef.current?.focus();
+                      }}
+                      returnKeyType="next"
                     />
                   </View>
                 </View>
@@ -133,6 +133,7 @@ export default function Login() {
                       onBlur={onBlur}
                       style={style.input}
                       secureTextEntry
+                      ref={passwordInputRef}
                     />
                   </View>
                 </View>

@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useEffect, useState } from "react";
-import { AuthContextType, LoginUser } from "../types/auth.context";
+import { AuthContextType, LoginUser, SignupUser } from "../types/auth.context";
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "../types/user";
@@ -17,6 +17,7 @@ interface jwtUser {
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   login: async () => {},
+  signup: async () => {},
   logoff: async () => {},
 });
 
@@ -70,6 +71,14 @@ export function AuthProvider({ children }: PropsType) {
     }
   }
 
+  async function signup(user: SignupUser) {
+    try {
+      await api.post("/auth/signup", user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async function logoff() {
     setUser(null);
     await AsyncStorage.removeItem("token");
@@ -80,7 +89,7 @@ export function AuthProvider({ children }: PropsType) {
   }, [token]);
 
   return (
-    <AuthContext.Provider value={{ user, login, logoff }}>
+    <AuthContext.Provider value={{ user, login, signup, logoff }}>
       {!loading && children}
     </AuthContext.Provider>
   );
