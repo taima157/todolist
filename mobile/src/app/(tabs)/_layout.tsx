@@ -4,19 +4,15 @@ import { useContext, useEffect } from "react";
 
 export default function AppLayout() {
   const { user } = useContext(AuthContext);
-  console.log(user)
 
-  if (!user) {
-    
-    return <Redirect href="/login" />;
-  }
+  if (!user) return <Redirect href="/login" />;
 
   return <Tab />;
 }
 
 function Tab() {
   return (
-    <Tabs>
+    <Tabs options={{}}>
       <Tabs.Screen
         name="index"
         options={{
