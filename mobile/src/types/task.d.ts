@@ -8,4 +8,6 @@ export interface Task {
   todoId: string;
   description: string;
   done: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -22,6 +22,8 @@ class Todo extends Model<
   declare title: string;
   declare description: string;
   declare done: CreationOptional<boolean>;
+  declare createdAt: CreationOptional<string>;
+  declare updatedAt: CreationOptional<string>;
 
   declare getTasks: HasManyGetAssociationsMixin<Task>;
 
@@ -59,12 +61,18 @@ Todo.init(
       defaultValue: 0,
       allowNull: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: "updated_at",
+    },
   },
   {
     sequelize: database,
     tableName: "todos",
-    createdAt: false,
-    updatedAt: false,
   }
 );
 

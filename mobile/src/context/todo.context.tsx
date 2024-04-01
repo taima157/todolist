@@ -79,7 +79,7 @@ export function TodoProvider({ children }: PropsType) {
       const body = { ...todo, userId: user?.idUser };
       const { data }: { data: Todo } = await api.post("/todo", body, apiConfig);
 
-      // setTodoList([...todoList, data]);
+      setTodoList([data, ...todoList]);
     } catch (error) {
       console.log(error);
       throw error;

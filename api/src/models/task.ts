@@ -14,6 +14,8 @@ class Task extends Model<InferAttributes<Task>, InferCreationAttributes<Task>> {
   declare todoId: ForeignKey<Todo["idTodo"]>;
   declare description: string;
   declare done: CreationOptional<boolean>;
+  declare createdAt: CreationOptional<string>;
+  declare updatedAt: CreationOptional<string>;
 }
 
 Task.init(
@@ -39,12 +41,18 @@ Task.init(
       allowNull: false,
       defaultValue: 0,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: "updated_at",
+    },
   },
   {
     sequelize: database,
     tableName: "tasks",
-    createdAt: false,
-    updatedAt: false,
   }
 );
 

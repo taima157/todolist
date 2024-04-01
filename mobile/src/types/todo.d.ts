@@ -11,5 +11,7 @@ export interface Todo {
   title: string;
   description: string;
   done: boolean;
+  createdAt: string;
+  updatedAt: string;
   taskList: Array<Task>;
 }

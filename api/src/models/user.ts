@@ -19,6 +19,8 @@ class User extends Model<
   declare name: string;
   declare email: string;
   declare password: string;
+  declare createdAt: CreationOptional<string>;
+  declare updatedAt: CreationOptional<string>;
 
   declare getTodos: HasManyGetAssociationsMixin<Todo>;
 
@@ -50,12 +52,18 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      field: "updated_at",
+    },
   },
   {
     sequelize: database,
     tableName: "users",
-    createdAt: false,
-    updatedAt: false,
   }
 );
 
