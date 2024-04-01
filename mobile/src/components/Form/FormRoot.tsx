@@ -1,10 +1,10 @@
 import { ReactNode } from "react";
-import { View } from "react-native";
+import { View, ViewProps } from "react-native";
 
-interface FormRootProps {
-  children: ReactNode;
-}
-
-export default function FormRoot({ children }: FormRootProps) {
-  return <View style={{ gap: 30 }}>{children}</View>;
+export default function FormRoot(props: ViewProps) {
+  return (
+    <View {...props} style={[{ gap: 30 }, props.style]}>
+      {props.children}
+    </View>
+  );
 }

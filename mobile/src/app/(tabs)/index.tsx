@@ -1,25 +1,16 @@
 import { Button } from "@/src/components/Button";
 import { Title } from "@/src/components/Title";
+import TodoCard from "@/src/components/TodoCard";
 import colors from "@/src/constants/colors";
 import { AuthContext } from "@/src/context/auth.context";
+import { TodoContext } from "@/src/context/todo.context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useContext } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 
 export default function TabOneScreen() {
-  const { logoff } = useContext(AuthContext);
-
-  function handleLogoff() {
-    logoff();
-    router.push("/login");
-  }
+  const { todoList } = useContext(TodoContext);
 
   return (
     <SafeAreaView style={style.container}>
@@ -29,20 +20,17 @@ export default function TabOneScreen() {
           <Title.Secundary>Essa é sua lista de afazeres.</Title.Secundary>
         </Title.Root>
 
-        {/* <View style={style.titleBox}>
-          <Text style={style.title}>Afazeres</Text>
-          <Text style={style.subtitle}>Essa é sua lista de afazeres.</Text>
-        </View> */}
+        <ScrollView style={style.scrollList}>
+          <View style={style.todoList}>
+            {todoList?.map((todo) => (
+              <TodoCard key={todo.idTodo} todo={todo} />
+            ))}
+          </View>
+        </ScrollView>
 
         <Button.Root
-          style={{
-            width: 55,
-            height: 55,
-            borderRadius: 50,
-            position: "absolute",
-            bottom: 20,
-            right: 20,
-          }}
+          style={style.buttonAddTodo}
+          onPress={() => router.push("/add-todo")}
         >
           <Button.Icon
             icon={MaterialIcons}
@@ -63,12 +51,31 @@ const style = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    padding: 20,
     position: "relative",
   },
   title: {
     paddingBottom: 15,
-    borderBottomColor: colors.backgroundSecundary,
+    borderBottomColor: colors.gray,
     borderBottomWidth: 2,
+    padding: 20,
+  },
+  scrollList: {
+    paddingLeft: 20,
+    paddingRight: 20,
+  },
+  todoList: {
+    flex: 1,
+    marginTop: 20,
+    width: "100%",
+    gap: 20,
+    paddingBottom: 20,
+  },
+  buttonAddTodo: {
+    width: 55,
+    height: 55,
+    borderRadius: 50,
+    position: "absolute",
+    bottom: 20,
+    right: 20,
   },
 });

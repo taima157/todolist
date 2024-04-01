@@ -1,11 +1,5 @@
 import { Task } from "./task";
-import { Todo } from "./todo";
-
-export interface CreateTodo {
-  userId: string;
-  title: string;
-  description: string;
-}
+import { CreateTodo, Todo } from "./todo";
 
 export interface CreateTask {
   todoId: string;

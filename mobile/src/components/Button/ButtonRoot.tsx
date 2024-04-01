@@ -10,14 +10,23 @@ import {
 
 interface ButtonRootProps extends TouchableOpacityProps {
   text?: string;
-  children?: ReactNode;
+  textColor?: string;
   alignSelf?: ViewStyle["alignSelf"];
 }
 
 export default function ButtonRoot(props: ButtonRootProps) {
   return (
     <TouchableOpacity {...props} style={[style.button, props.style]}>
-      {props.text && <Text style={style.buttonText}>{props.text}</Text>}
+      {props.text && (
+        <Text
+          style={[
+            style.buttonText,
+            props.textColor ? { color: props.textColor } : null,
+          ]}
+        >
+          {props.text}
+        </Text>
+      )}
       {props.children}
     </TouchableOpacity>
   );

@@ -10,7 +10,7 @@ import { InputControlerContext } from "./InputController";
 import colors from "@/src/constants/colors";
 
 interface InputFieldProps extends TextInputProps {
-  label: string;
+  label?: string;
 }
 
 export default function InputField(props: InputFieldProps) {

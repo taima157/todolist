@@ -8,6 +8,7 @@ import {
   Montserrat_600SemiBold,
   Montserrat_700Bold,
 } from "@expo-google-fonts/montserrat";
+import { TodoProvider } from "../context/todo.context";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -42,11 +43,27 @@ export default function RootLayout() {
 function RootLayoutNav() {
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen name="login" options={{ headerShown: false }} />
-        <Stack.Screen name="signup" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
+      <TodoProvider>
+        <Stack>
+          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="signup" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="todo/[idTodo]"
+            options={{
+              headerShown: false,
+              presentation: "modal",
+            }}
+          />
+          <Stack.Screen
+            name="add-todo"
+            options={{
+              headerShown: false,
+              presentation: "modal",
+            }}
+          />
+        </Stack>
+      </TodoProvider>
     </AuthProvider>
   );
 }

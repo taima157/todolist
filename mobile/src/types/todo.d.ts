@@ -1,7 +1,6 @@
 import { Task } from "./task";
 
 export interface CreateTodo {
-  userId: string;
   title: string;
   description: string;
 }

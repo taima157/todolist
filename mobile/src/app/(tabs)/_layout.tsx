@@ -1,5 +1,6 @@
 import colors from "@/src/constants/colors";
 import { AuthContext } from "@/src/context/auth.context";
+import { TodoProvider } from "@/src/context/todo.context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
 import { useContext, useEffect } from "react";
@@ -33,10 +34,10 @@ function Tab() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: "Afazeres",
           headerShown: false,
           tabBarIcon: ({ color }: { color: string }) => {
-            return <MaterialIcons name="home" size={26} color={color} />;
+            return <MaterialIcons name="checklist" size={26} color={color} />;
           },
         }}
       />

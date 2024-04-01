@@ -10,6 +10,7 @@ import { CreateTodo, Todo } from "../types/todo";
 import { CreateTask, Task } from "../types/task";
 import api from "../services/api";
 import { AuthContext } from "./auth.context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type PropsType = {
   children: ReactNode;
@@ -30,10 +31,28 @@ export const TodoContext = createContext<TodoContextType>({
 export function TodoProvider({ children }: PropsType) {
   const { user } = useContext(AuthContext);
 
-  const todoList = user?.todoList || [];
+  const [todoList, setTodoList] = useState<Array<Todo>>(user?.todoList || []);
 
   const [taskList, setTaskList] = useState<Array<Task> | null>(null);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [apiConfig, setApiConfig] = useState({
+    headers: {
+      Authorization: "",
+    },
+  });
+
+  async function getToken() {
+    const token = await AsyncStorage.getItem("token");
+
+    if (token) {
+      setApiConfig({
+        ...apiConfig,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+  }
 
   async function getTaskList() {
     try {
@@ -57,8 +76,12 @@ export function TodoProvider({ children }: PropsType) {
 
   async function createTodo(todo: CreateTodo) {
     try {
-      await api.post("/todo", todo);
+      const body = { ...todo, userId: user?.idUser };
+      const { data }: { data: Todo } = await api.post("/todo", body, apiConfig);
+
+      // setTodoList([...todoList, data]);
     } catch (error) {
+      console.log(error);
       throw error;
     }
   }
@@ -111,6 +134,8 @@ export function TodoProvider({ children }: PropsType) {
     if (selectedTodo) {
       getTaskList();
     }
+
+    getToken();
   }, [selectedTodo]);
 
   return (
